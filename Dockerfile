@@ -47,7 +47,7 @@ WORKDIR /app
 
 # ── Python dependencies ──────────────────────────────────────
 COPY requirements.txt .
-COPY build_script.py .
+COPY src/utils/build_script.py .
 
 COPY src/ /app/src/
 COPY main.py /app/main.py
