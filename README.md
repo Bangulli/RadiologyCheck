@@ -6,6 +6,9 @@ PARSOR aims at automating the full radiology reporting and diagnosis process and
 With this PARSOR demo it is possible to automate the reporting in one prompt by automating translation and formatting in code. 
 The user is prompted to provide the subspecialty, patient history and their findings in german or english. The results are then processed and translated by Helsinki-NLP's opus, then parsed into a unified prompt and fed to Google's MedGemma for report generation.
 
+<img src="better parsor demo concept.png" width="1000px" align="center" />  
+
+
 ## Requirements
 This repository makes use of open source models from the Huggingface model zoo.
 Make sure to request access to the following models:
