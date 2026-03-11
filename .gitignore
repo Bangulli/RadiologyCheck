@@ -1,0 +1,8 @@
+token.txt
+/models/
+/.venv/
+/examples/
+/outputs/*
+Premium Radiology Second Opinion AI Prompt.pdf
+/eval/
+v2_fewshot_baseprompt.json
