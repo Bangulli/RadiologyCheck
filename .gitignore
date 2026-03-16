@@ -5,4 +5,9 @@ token.txt
 /outputs/*
 Premium Radiology Second Opinion AI Prompt.pdf
 /eval/
-v2_fewshot_baseprompt.json
+v3_fewshot_baseprompt.json
+/data/
+Dockerfile.web.dev
+compose.yaml
+Dockerfile.web
+/api/

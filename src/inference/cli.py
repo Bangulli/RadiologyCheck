@@ -146,4 +146,6 @@ def infer(args):
             
         ## exit ----------------------------------------------------------------------------
         else: break
-    return
+    if not args.ret: return
+    else: return result
+

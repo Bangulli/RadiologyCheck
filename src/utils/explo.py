@@ -22,12 +22,12 @@ def get_avg_report_length(pth, dir):
 if __name__ == '__main__':
     # get_avg_report_length("/mnt/nas6/data/PARSOR/02_Cases", "05_Final_Second_Opinion")
     # RESULT: Average report length in tokens is: 1632.8188976377953
-    with open('/home/lorenz/RadiologyCheck/baseprompt.json', 'r') as j:
+    with open('/home/lorenz/RadiologyCheck/v2_fewshot_baseprompt.json', 'r') as j:
         dct = json.load(j)
-        with open('/mnt/nas6/data/PARSOR/02_Cases/P126/05_Final_Second_Opinion/final report 1.txt', 'r') as f:
+        with open('/home/lorenz/RadiologyCheck/examples/p014/rep.txt', 'r') as f:
             txt = f.read()
     
     dct[4]['content'][0]['text'] = txt
-    with open('/home/lorenz/RadiologyCheck/baseprompt_parsed.json', 'w') as j:
+    with open('/home/lorenz/RadiologyCheck/v3_fewshot_baseprompt.json', 'w') as j:
         json.dump(dct, j, indent=2)
     

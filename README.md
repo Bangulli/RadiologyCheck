@@ -30,3 +30,6 @@ Model outputs are stored as markdown (.md) files. To run mount an output directo
 docker run --rm -it --gpus all -v ./outputs:/outputs parsor:latest -dir /outputs/run
 ```
 The container is designed to interact with the user and requests the radiologist subspecialty, patient information, radiologist findings as well as any supplementary files at runtime. Note that only text files are supported, and that textfiles have to be stored in a directory and mounted to the container as well using `-v YOUR_INPUT_DIR:/inputs` then the filepaths are available to the pipeline at the path `/inputs/YOUR_FILE_NAME`
+
+## Baseprompt
+The base prompt contains patients 121, 127, 14

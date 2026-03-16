@@ -1,3 +1,8 @@
 docker build --secret id=hf_token,src=token.txt -t parsor:0.0.0 .
+docker build --secret id=hf_token,src=token.txt -t parsor:0.0.0.web -f Dockerfile.web .
 
 docker run --rm -it --gpus all -v ./outputs:/outputs parsor:0.0.0 -dir /outputs/run
+docker run --rm -it --gpus all -v ./outputs:/outputs parsor:0.0.0.web 
+
+export HF_TOKEN=$(cat token.txt)
+echo $HF_TOKEN

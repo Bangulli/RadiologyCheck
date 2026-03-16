@@ -1,0 +1,91 @@
+# ─────────────────────────────────────────────────────────────────
+#  MedGemma 1.5 4B-IT  ·  HuggingFace Chat UI  ·  Local stack
+#  Usage:  docker compose up
+#  UI:     http://localhost:3000
+# ─────────────────────────────────────────────────────────────────
+
+services:
+
+  # ── 1. Model inference backend (TGI) ──────────────────────────
+  tgi:
+    image: ghcr.io/huggingface/text-generation-inference:3.3.4
+    container_name: medgemma-tgi
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ./data/tgi/:/data            # model weights are cached here
+    environment:
+      HUGGING_FACE_HUB_TOKEN: ${HF_TOKEN}
+      HF_TOKEN: ${HF_TOKEN}
+    command: >
+      --model-id google/medgemma-1.5-4b-it
+      --dtype bfloat16
+      --max-input-length 4096
+      --max-total-tokens 8192
+      --max-batch-prefill-tokens 4096
+    shm_size: "1g"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:80/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 120s      # model download can take a few minutes
+    deploy:
+      resources:
+        reservations:
+          devices: 
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    
+
+  # ── 2. MongoDB (conversation storage) ─────────────────────────
+  mongo:
+    image: mongo:7
+    container_name: medgemma-mongo
+    restart: unless-stopped
+    volumes:
+      - ./data/mongo/:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # ── 3. HuggingFace Chat UI ────────────────────────────────────
+  chat-ui:
+    image: ghcr.io/huggingface/chat-ui-db:latest
+    container_name: medgemma-chatui
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    depends_on:
+      tgi:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+    environment:
+      MONGODB_URL: "mongodb://mongo:27017"
+      HF_TOKEN: ${HF_TOKEN}
+      PUBLIC_APP_NAME: "MedGemma Chat"
+      PUBLIC_APP_DESCRIPTION: "Google MedGemma 1.5 4B – medical AI assistant"
+      # Point chat-ui at our local TGI backend via the TGI native protocol
+      MODELS: >
+        [{
+          "name": "google/medgemma-1.5-4b-it",
+          "displayName": "MedGemma 1.5 4B",
+          "description": "Google MedGemma 1.5 – multimodal medical AI (text + images)",
+          "multimodal": false,
+          "parameters": {
+            "temperature": 0.7,
+            "top_p": 0.95,
+            "max_new_tokens": 2048,
+            "repetition_penalty": 1.1
+          },
+          "endpoints": [{
+            "type": "tgi",
+            "url": "http://tgi:80"
+          }]
+        }]
