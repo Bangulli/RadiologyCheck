@@ -68,24 +68,25 @@ services:
         condition: service_healthy
     environment:
       MONGODB_URL: "mongodb://mongo:27017"
-      HF_TOKEN: ${HF_TOKEN}
       PUBLIC_APP_NAME: "MedGemma Chat"
       PUBLIC_APP_DESCRIPTION: "Google MedGemma 1.5 4B – medical AI assistant"
-      # Point chat-ui at our local TGI backend via the TGI native protocol
       MODELS: >
-        [{
-          "name": "google/medgemma-1.5-4b-it",
-          "displayName": "MedGemma 1.5 4B",
-          "description": "Google MedGemma 1.5 – multimodal medical AI (text + images)",
-          "multimodal": false,
-          "parameters": {
-            "temperature": 0.7,
-            "top_p": 0.95,
-            "max_new_tokens": 2048,
-            "repetition_penalty": 1.1
-          },
-          "endpoints": [{
-            "type": "tgi",
-            "url": "http://tgi:80"
-          }]
-        }]
+        [
+          {
+            "id": "google/medgemma-1.5-4b-it",
+            "name": "google/medgemma-1.5-4b-it",
+            "displayName": "MedGemma 1.5 4B",
+            "parameters": {
+              "temperature": 0.7,
+              "top_p": 0.95,
+              "max_new_tokens": 2048,
+              "repetition_penalty": 1.1
+            },
+            "endpoints": [
+              {
+                "type": "openai",
+                "baseURL": "http://tgi:80/v1"
+              }
+            ]
+          }
+        ]
