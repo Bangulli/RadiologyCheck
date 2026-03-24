@@ -2,10 +2,11 @@ from transformers import MarianMTModel, MarianTokenizer
 import re
 
 class Translator():
-    def __init__(self, model_name = "/model/tran"):
+    def __init__(self, model_name = "models/tran", device = 'cuda:1'):
         self.tokenizer = MarianTokenizer.from_pretrained(model_name)
-        self.model = MarianMTModel.from_pretrained(model_name)
-        self.max_tokens = 256
+        self.model = MarianMTModel.from_pretrained(model_name, device_map=device)
+        self.device = device
+        self.max_tokens = 128
         
     def _chunkify(self, text):
         sentences = re.split(r'(?<=[.!?])\s+', text.strip())
@@ -30,7 +31,7 @@ class Translator():
     
     def _translate_chunk(self, chunk):
         tok = self.tokenizer(chunk, return_tensors="pt").input_ids
-        output = self.model.generate(tok)[0]
+        output = self.model.generate(tok.to(self.device))[0]
         return self.tokenizer.decode(output, skip_special_tokens=True)
 
     def __call__(self, text): 

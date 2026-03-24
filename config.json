@@ -1,5 +1,6 @@
 {
     "tran": "models/tran",
     "inf": "models/inf",
-    "baseprompt": "v3_fewshot_baseprompt.json"
+    "baseprompt": "v3_fewshot_baseprompt.json",
+    "device": "cuda:1"
 }

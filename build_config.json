@@ -1,5 +1,6 @@
 {
     "tran": "/models/tran",
     "inf": "/models/inf",
-    "baseprompt": "baseprompt.json"
+    "baseprompt": "baseprompt.json",
+    "device": "cuda"
 }
