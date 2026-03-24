@@ -18,27 +18,30 @@ def infer(ds, out, enable_3rd_party_translation=False):
     to_english = Translator(model_name=cfg['tran'], device=cfg['device'])
 
     for id, prompt in tqdm.tqdm(ds, desc='Inferring'):
-        ## fuse with few shot prompt here ----------------------------------------------------------------------------
-        with open(cfg['baseprompt'], "r") as msg:
-            messages = json.load(msg)
-        messages.append(prompt)
-        messages.append({
-            "role": "assistant",
-            "content": [{"type": "text", "text": "## Radiology Second Opinion Report\n\n### Part 1: Clinical History\n\n"}]
-        })
+        try:
+            if os.path.exists(out/id):continue
+            ## fuse with few shot prompt here ----------------------------------------------------------------------------
+            with open(cfg['baseprompt'], "r") as msg:
+                messages = json.load(msg)
+            messages.append(prompt)
+            messages.append({
+                "role": "assistant",
+                "content": [{"type": "text", "text": "## Radiology Second Opinion Report\n\n### Part 1: Clinical History\n\n"}]
+            })
+            os.makedirs(out/id, exist_ok=True)
+            with open(out/id/'prmpt.json', 'w') as f:
+                json.dump(messages, f, indent=4)
+            ## run inference
+            result = run_medgemma(messages, pth=cfg['inf'], device=cfg['device'])
+            
+            ## save output
         
-        ## run inference
-        result = run_medgemma(messages, pth=cfg['inf'], device=cfg['device'])
-
-        ## save output
-        os.makedirs(out/id, exist_ok=True)
-        with open(out/id/'prmpt.json', 'w') as f:
-            json.dump(messages, f, indent=4)
-        with open(out/id/'generated_report.txt', 'w') as f:
-            f.write(result[-1]['text'])   
-    
+            with open(out/id/'generated_report.txt', 'w') as f:
+                f.write(result[-1]['text'])   
+        except: continue
 def eval(ds, out):
     out = pl.Path(out)
+    ds.return_type='dict'
     os.makedirs(out, exist_ok=True)
     cnt = 0
     bleu_accum = 0
