@@ -4,6 +4,24 @@ import torch
 
 ## NOTE:  this model hallucinates A LOT needs proper base prompt tuning i think.
 
+def run(messages, device):
+    pipe = pipeline(
+        "image-text-to-text",
+        model="models/inf",
+        device=device,
+        torch_dtype=torch.bfloat16,
+    )
+    # streamer = TextStreamer(
+    #     AutoTokenizer.from_pretrained(pth),
+    #     skip_prompt=True,        # Don't re-print your input prompt
+    #     skip_special_tokens=True # Cleaner output
+    # )
+
+    output = pipe(text=messages, max_new_tokens=3000)
+
+    return(output[0]["generated_text"][-1]["content"])
+
+
 def run_medgemma(messages, pth, device):
     pipe = pipeline(
         "image-text-to-text",
@@ -20,4 +38,3 @@ def run_medgemma(messages, pth, device):
     output = pipe(text=messages, max_new_tokens=3000)
 
     return(output[0]["generated_text"][-1]["content"])
-

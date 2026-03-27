@@ -2,20 +2,29 @@ from pypdf import PdfReader
 import sys, os, pprint, pathlib as pl, json, tqdm
 sys.path.append(os.path.join(os.path.dirname(__file__), "."))
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
-from src.networks.medgemma import run_medgemma
+
 from src.utils.io import extract_text
 from src.utils.language_handling import LangDct
 from src.networks.translation import Translator
 from src.utils.eval_bleu import bleu
 from src.utils.semantic_sim import semantic_similarity
 
-def infer(ds, out, enable_3rd_party_translation=False):
+def infer(ds, out, enable_3rd_party_translation=False, model='medgemma'):
+    if model == 'medgemma':
+        from src.networks.medgemma import run
+    elif model == 'lingshu':
+        from src.networks.lingshu import run
+    elif model == 'fleming':
+        from src.networks.fleming import run
+    else: raise RuntimeError(f'Unrecognized Model: {model}')
+    
+    
     out = pl.Path(out)
     os.makedirs(out, exist_ok=True)
     with open("config.json", "r") as f:
         cfg = json.load(f)
     needs_to_english = LangDct(enable_3rd_party_translation)
-    to_english = Translator(model_name=cfg['tran'], device=cfg['device'])
+    to_english = Translator(model_name=cfg['tran'], device=cfg['device']) if enable_3rd_party_translation else None
 
     for id, prompt in tqdm.tqdm(ds, desc='Inferring'):
         try:
@@ -32,13 +41,15 @@ def infer(ds, out, enable_3rd_party_translation=False):
             with open(out/id/'prmpt.json', 'w') as f:
                 json.dump(messages, f, indent=4)
             ## run inference
-            result = run_medgemma(messages, pth=cfg['inf'], device=cfg['device'])
-            
+            result = run(messages, device=cfg['device'])
+            #print(result)
             ## save output
         
             with open(out/id/'generated_report.txt', 'w') as f:
+                #print(result[-1]['text'])
                 f.write(result[-1]['text'])   
-        except: continue
+        except: raise
+        
 def eval(ds, out):
     out = pl.Path(out)
     ds.return_type='dict'
