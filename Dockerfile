@@ -49,9 +49,9 @@ COPY src/utils/build_script.py .
 
 COPY src/ /app/src/
 COPY main.py /app/main.py
-COPY build_config.json /app/config.json
+COPY configs/build_config.json /app/config.json
 ## Copy baseprompt file
-COPY v3_fewshot_baseprompt.json /app/baseprompt.json
+COPY prompts/v3_fewshot_baseprompt.json /app/baseprompt.json
 
 RUN pip install --upgrade pip setuptools wheel && \
     pip install -r requirements.txt 
