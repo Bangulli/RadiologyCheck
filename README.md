@@ -31,5 +31,25 @@ docker run --rm -it --gpus all -v ./outputs:/outputs parsor:latest -dir /outputs
 ```
 The container is designed to interact with the user and requests the radiologist subspecialty, patient information, radiologist findings as well as any supplementary files at runtime. Note that only text files are supported, and that textfiles have to be stored in a directory and mounted to the container as well using `-v YOUR_INPUT_DIR:/inputs` then the filepaths are available to the pipeline at the path `/inputs/YOUR_FILE_NAME`
 
-## Baseprompt
-The base prompt contains patients 121, 127, 14
+## Data & Baseprompt & Non-Interactive Inference
+The base prompt contains patients 121, 127, 14. To build your own baseprompt use the [dataloader](src/utils/dataloader.py). Copy the file into your data folder and import it into the [non-interactive script](parsor-noninteractive.py). 
+
+### Data structure
+The data needs to be in a compliant format:
+```bash
+Dataset/
+├── Patients/ ## all patients                 
+│   ├── P001/ ## single patient
+│   │   ├── supplementary_files/                
+│   │   │   ├── file1.txt
+│   │   │   └── fileX.txt
+│   │   ├── final_report.txt
+│   │   ├── findings.txt
+│   │   ├── history.txt
+│   │   └── specialty.txt
+│   ├── P00X/ ## single patient
+│   ├── .dsignore ## patients used in baseprompt
+│   ├── .dstranslate ## patients where the final_report.txt needs to be translated to english
+│   └── dataloader.py
+```
+Running the non-interactive script will then produce outputs for all models and all samples in the dataset, the eval method will evaluate all of them according to BLEU and Semantic Similarity.
