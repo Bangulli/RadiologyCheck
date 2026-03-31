@@ -13,8 +13,8 @@ print(len(ds))
 with open('/home/lorenz/RadiologyCheck/v3_fewshot_baseprompt.json', 'w') as f:
     json.dump(ds.make_baseprompt(), f, indent=4)
 
-for meth in ['fleming', 'linghsu' , 'medgemma']:
+for meth in ['fleming', 'lingshu' , 'medgemma']:
     output = f'data/outputs/{meth}'
 
-    infer(ds, output, model=meth)
-    eval(ds, output)
+    #infer(ds, output, model=meth)
+    eval(ds, output) ## there was an issue with pat034 so eval has to be rerun

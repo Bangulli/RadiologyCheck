@@ -2,8 +2,6 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline, TextStre
 import warnings; warnings.filterwarnings('ignore')
 import torch
 
-## NOTE:  this model hallucinates A LOT needs proper base prompt tuning i think.
-
 def run(messages, device):
     tokenizer = AutoTokenizer.from_pretrained("UbiquantAI/Fleming-R1-32B")
     model = AutoModelForCausalLM.from_pretrained(
@@ -30,7 +28,7 @@ def run(messages, device):
     output = tokenizer.decode(output_ids, skip_special_tokens=True).strip("\n")
     thinking_content = output.split("<think>")[-1].split("</think>")[0]
     output_text = output.split("</think>")[-1]
-    print(output_text)
+
     return [{'text':output_text}]
 
 def flatten_messages(messages):

@@ -2,8 +2,6 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline, TextStre
 import warnings; warnings.filterwarnings('ignore')
 import torch
 
-## NOTE:  this model hallucinates A LOT needs proper base prompt tuning i think.
-
 def run(messages, device):
     pipe = pipeline(
         "image-text-to-text",

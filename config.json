@@ -2,5 +2,8 @@
     "tran": "models/tran",
     "inf": "models/inf",
     "baseprompt": "v3_fewshot_baseprompt.json",
-    "device": "cuda"
+    "tran_id": "Helsinki-NLP/opus-mt_tiny_deu-eng",
+    "inf_id": "UbiquantAI/Fleming-R1-32B",
+    "device": "cuda",
+    "model": "fleming"
 }

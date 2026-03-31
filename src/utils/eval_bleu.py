@@ -15,9 +15,9 @@ def bleu(pred, gt):
     # NLTK
     # Download Punkt tokenizer (for word_tokenize method)
     # Download stopwords (for stopword removal)
-    nltk.download('punkt')
-    nltk.download('punkt_tab')
-    nltk.download('stopwords')
+    nltk.download('punkt', quiet=True)
+    nltk.download('punkt_tab', quiet=True)
+    nltk.download('stopwords', quiet=True)
     
     # English Stopwords
     stops = set(stopwords.words("english"))

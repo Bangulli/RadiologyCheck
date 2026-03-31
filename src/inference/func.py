@@ -64,7 +64,7 @@ def eval(ds, out):
                 result = f.read()
                 bleu_score = bleu(result, sample['final_report'])
                 semsim = semantic_similarity(result, sample['final_report'])
-            print(f"Sample {sample['id']} achieved BLEU {bleu_score}; SemSim {semsim}")
+            #print(f"Sample {sample['id']} achieved BLEU {bleu_score}; SemSim {semsim}")
             cnt += 1; bleu_accum+=bleu_score; semsim_accum+=semsim
             scores[sample['id']] = {"bleu": bleu_score, "SemSim": semsim}
         except: continue
@@ -73,3 +73,5 @@ def eval(ds, out):
         json.dump(scores, f, indent=4)
         
     print(f"Avg over {cnt} samples is: BLEU {bleu_accum/cnt}; SemSim {semsim_accum/cnt}")
+    with open(out/'avg.txt', 'w') as f:
+        f.write(f"Avg over {cnt} samples is: BLEU {bleu_accum/cnt}; SemSim {semsim_accum/cnt}")

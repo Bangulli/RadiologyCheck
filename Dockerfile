@@ -5,8 +5,6 @@ FROM nvidia/cuda:12.9.1-cudnn-devel-ubuntu24.04
 
 # ── Build arguments ──────────────────────────────────────────
 ARG PYTHON_VERSION=3.11
-ARG INFERENCE_MODEL_ID="google/medgemma-1.5-4b-it"
-ARG TRANSLATION_MODEL_ID="Helsinki-NLP/opus-mt_tiny_deu-eng"
 ARG HF_HOME=/app/hf_cache
 
 # ── Environment variables ────────────────────────────────────
@@ -53,7 +51,7 @@ COPY src/ /app/src/
 COPY main.py /app/main.py
 COPY build_config.json /app/config.json
 ## Copy baseprompt file
-COPY v2_fewshot_baseprompt.json /app/v2_fewshot_baseprompt.json
+COPY v3_fewshot_baseprompt.json /app/baseprompt.json
 
 RUN pip install --upgrade pip setuptools wheel && \
     pip install -r requirements.txt 
@@ -63,7 +61,7 @@ RUN pip install flash_attn==2.8.3 --no-build-isolation
 RUN --mount=type=secret,id=hf_token \
     HF_TOKEN=$(cat /run/secrets/hf_token) && \
     mkdir -p ${HF_HOME} && \
-    python build_script.py -tok ${HF_TOKEN} -inf ${INFERENCE_MODEL_ID} -tran ${TRANSLATION_MODEL_ID}
+    python build_script.py -tok ${HF_TOKEN}
 
 # ── Entrypoint ───────────────────────────────────────────────
 ENTRYPOINT ["python", "/app/main.py"]

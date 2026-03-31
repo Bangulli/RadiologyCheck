@@ -6,9 +6,6 @@ import os
 from pathlib import Path
 import warnings; warnings.filterwarnings('ignore')
 
-
-## NOTE:  this model hallucinates A LOT needs proper base prompt tuning i think.
-
 def run(messages, device):
     model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
         "lingshu-medical-mllm/Lingshu-32B",
