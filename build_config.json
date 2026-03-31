@@ -2,8 +2,8 @@
     "tran": "/models/tran",
     "inf": "/models/inf",
     "tran_id": "Helsinki-NLP/opus-mt_tiny_deu-eng",
-    "inf_id": "UbiquantAI/Fleming-R1-32B", 
+    "inf_id": "google/medgemma-1.5-4B-it", 
     "baseprompt": "baseprompt.json",
     "device": "cuda",
-    "model": "fleming"
+    "model": "medgemma"
 }
